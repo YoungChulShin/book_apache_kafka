@@ -8,14 +8,18 @@
 - 네트워크는 별도의 'MyNet'이라는 Bridge 네트워크를 추가
 
 주키퍼 정보
-- 04e08c7fd192 : 1
-- a103592b2bc0 : 2
-- 0471e9ad0a79 : 3
+- testZookeeper01 : 1
+- testZookeeper02 : 2
+- testZookeeper03 : 3
+
+주키퍼 지노드
+- ycshin-kafka
 
 카프카 정보
-- 2713ade48ea3 : 1
-- 318d7f3423ea : 2
-- 46d9dfc501a3 : 3
+- testKafka01 : 1
+- testKafka02 : 2
+- testKafka03 : 3
+
 
 테스트 네트워크
 |PC|Description|IP|Port|
@@ -36,11 +40,33 @@
 
 ### 기타 참고 도커 명령어
 도커 네트워크 확인 
-- docker network inspect bridge
+~~~bash
+docker network inspect bridge
+~~~
 
 도커 배쉬 접속
-- docker exec -it 컨테이너명 bash
+~~~bash
+docker exec -it 컨테이너명 bash
+~~~
 
 신규 컨테이너 생성
-- docker container run -it --privileged=true -v /sys/fs/cgroup:/sys/fs/cgroup:ro --name testZookeeper01 -p 2090:22 --network mynet --ip 172.19.0.100  centos:latest /sbin/init
+~~~bash
+docker container run -it --privileged=true -v /sys/fs/cgroup:/sys/fs/cgroup:ro --name testZookeeper01 -p 2090:22 --network mynet --ip 172.19.0.100  centos:latest /sbin/init
+~~~
 
+### 기타 참고 주키퍼 명령어
+CLI 접속
+~~~bash
+/usr/local/zookeeper/bin/zkCli.sh
+~~~
+
+브로커 정보 확인
+~~~bash
+ls /ycshin-kafka/brokers/ids
+~~~
+
+### 기타 참고 카프카 명령어
+카프카 로그 확인
+~~~bash
+cat /usr/local/kafka/logs/server.log
+~~~
