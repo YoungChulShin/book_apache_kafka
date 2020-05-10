@@ -20,16 +20,19 @@
 - testKafka02 : 2
 - testKafka03 : 3
 
+토픽
+- ycshin-topic
+
 
 테스트 네트워크
-|PC|Description|IP|Port|
-|--|-----------|--|----|
-|testZookeeper01||172.19.0.100|2090|
-|testZookeeper02||172.19.0.101|2091|
-|testZookeeper03||172.19.0.102|2092|
-|testKafka01||172.19.0.103|2093|
-|testKafka02||172.19.0.104|2094|
-|testKafka03||172.19.0.105|2095|
+|PC|Description|IP|SSH Port(22)|Zookeeper Port(2181)|Kafka Port(9092)|
+|--|-----------|--|----|-|-|
+|testZookeeper01||172.19.0.100|2090|3000||
+|testZookeeper02||172.19.0.101|2091|3001||
+|testZookeeper03||172.19.0.102|2092|3002||
+|testKafka01||172.19.0.103|2093||3003|
+|testKafka02||172.19.0.104|2094||3003|
+|testKafka03||172.19.0.105|2095||3003|
 
 카프카 서버 설정 정보
 - zookeeper.connect=testZookeeper01:2181,testZookeeper02:2181,testZookeeper03:2181/test-kafka
