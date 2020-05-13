@@ -51,8 +51,6 @@ Relication 수 변경
       ~~~
       yum install git
       ~~~
-   - 
-
 
 
 메시지 보내기/받기
@@ -78,7 +76,12 @@ Relication 수 변경
 server.properties 를 통해서 실행할 때 에러 
 - 메시지
    ~~~
-   The unit files have no installation config (WantedBy, RequiredBy, Also, Alias
-settings in the [Install] section, and DefaultInstance for template units).
-This means they are not meant to be enabled using systemctl.
+   The unit files have no installation config (WantedBy, RequiredBy, Also, Alias settings in the [Install] section, and DefaultInstance for template units).
+   This means they are not meant to be enabled using systemctl.
+   ~~~
+- 해결 방법
+   - '/etc/systemd/system/kafka-server.service' 문서의 가장 아래에 install 설정을 추가해준다
+   ~~~
+   [Install]
+   WantedBy=multi-user.target
    ~~~
