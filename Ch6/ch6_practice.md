@@ -148,4 +148,85 @@ ycshin6-group   ycshin6-topic   1          0               0               0    
 
 ### 주키퍼와 카프카 스케일 아웃
 실습에서는 스킵
-- 다시 셋업할 엄두가 안남..
+
+## 카프카 모니터링
+### 카프카 JMX 설정
+JMX(Java Management eXtensions)
+- 자바로 만든 애플리케이션 모니터링 등을 위한 도구를 제공하는 자바 API
+- MBean(Managed Bean)이라는 객체로 표현된다
+
+JMX 설정 방법
+1. 카프카 실행 파일에 JMX 관련 설정을 추가하는 방법
+   - 카프카 버전 업그레이드로 실행 파일이 변경되면 다시 추가해줘야하는 단점이 있다
+2. systemd를 이용해서 환경변수를 추가하는 방법
+
+systemd를 이용해서 환경변수를 추가하는 방법 실습
+1. `/usr/local/kafka/config/jmx` 경로에 파일 생성 및 내용 입력
+   ~~~
+   JMX_PORT=9999
+   ~~~
+2. `/etc/systemd/system/kafka-server.service` 파일에 jxm 파일 추가
+   ~~~
+   // 중략
+   ExecStop=/usr/local/kafka/bin/kafka-server-stop.sh
+   EnvironmentFile=/usr/local/kafka/config/jmx
+   ~~~
+3. `systemd` 재시작 및 카프카 재 시작
+   ~~~
+   systemctl daemon-reload
+   systemctl restart kafka-server.service
+   ~~~
+4. 포트 리스닝 확인
+   ~~~
+   // 확인
+   netstat -ntlp | grep -i 9999
+
+   // 결과
+   tcp        0      0 0.0.0.0:9999            0.0.0.0:*               LISTEN      658/java
+   ~~~
+
+## 카프카 매니저 -> CMAK (Cluster Manager for Apache Kafka)
+CMAK
+- https://github.com/yahoo/CMAK
+- 운영과 관된된 기능들과 클러스터의 상태를 한눈에 볼수 있는 GUI 툴
+
+### CMAK 설치 
+설치 과정
+~~~
+// opt 폴더에 최신 버전 다운로드 
+wget https://github.com/yahoo/CMAK/archive/3.0.0.4.zip
+
+// 압축 풀기
+unzip 3.0.0.4.zip
+
+// zip 형태의 배포 파일 만들기 (java version을 1.8 -> 11로 올려줌)
+cd CMAK-3.0.0.4/
+./sbt clean dist
+
+// 배포 파일 생성 결과
+Your package is ready in /opt/CMAK-3.0.0.4/target/universal/cmak-3.0.0.4.zip
+
+// 생성된 파일을 usr/local 경로로 복사
+cp /opt/CMAK-3.0.0.4/target/universal/cmak-3.0.0.4.zip /usr/local/
+
+// 복사한 파일 압축 해제
+unzip cmak-3.0.0.4.zip
+
+// conf/application.conf 파일에서 주키퍼 설정을 변경
+kafka-manager.zkhosts="testZookeeper01:2181,testZookeeper02:2181,testZookeeper03:2181"
+
+cmak.zkhosts="testZookeeper01:2181,testZookeeper02:2181,testZookeeper03:2181"
+
+// 카프카 매니저 실행
+./cmak -Dconfig.file=/usr/local/cmak-3.0.0.4/conf/application.conf -Dhttp.port=9000
+
+// 접속 대기 활성화
+2020-05-20 11:56:38,798 - [INFO] p.c.s.AkkaHttpServer - Listening for HTTP on /0.0.0.0:9000
+~~~
+
+접속 성공
+![CMAK_run](/Ch6/Images/cmak-1-run.png)
+
+클러스터 생성
+![CMAK_run](/Ch6/Images/cmak-2-add-cluster.png)
+
